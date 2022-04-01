@@ -14,7 +14,7 @@ const Login = () => {
 
   const onUserLogin = async (e) => {
     e.preventDefault()
-    const response = await axios.post('http://54.183.246.192:9000/api/users/login/', {
+    const response = await axios.post('https://54.183.246.192:9000/api/users/login/', {
       email: formData.email,
       password: formData.password
     })
