@@ -2,7 +2,7 @@ import React from 'react'
 
 const Analytics = () => {
   return (
-    <div className="max-w-7xl h-[calc(100vh-72px)] mx-auto pt-8">
+    <div className="p-6">
       <article className="flex items-end space-x-2">
         <h2 className="text-4xl font-bold"> Default</h2>
         <p className="border-r pr-3 border-gray-200 font-light">new</p>

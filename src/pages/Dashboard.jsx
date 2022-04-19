@@ -6,15 +6,17 @@ import {
   Route,
 } from "react-router-dom"
 import Analytics from './Analytics'
+import Employees from './Employees'
 
 const Dashboard = () => {
   return (
-    <section>
-      <Navbar />
+    <section className="flex">
       <Sidebar />
-      <div className="ml-[6rem]">
+      <div className="flex-1">
+        <Navbar />
         <Routes>
           <Route path="/" element={<Analytics />} />
+          <Route path="/employees" element={<Employees />} />
         </Routes>
       </div>
     </section>

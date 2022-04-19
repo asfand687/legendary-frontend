@@ -12,7 +12,7 @@ const Navbar = () => {
     return token ? true : false
   }
   return (
-    <nav className="shadow-2xl p-4 px-10 flex justify-between items-center">
+    <nav className="shadow-2xl w-full p-4 px-10 flex justify-between items-center">
       <h2 className="font-bold text xl uppercase">Legendary</h2>
       {
         userLoggedIn ? (
