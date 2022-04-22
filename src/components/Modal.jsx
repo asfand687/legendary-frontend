@@ -1,23 +1,56 @@
+import axios from "axios";
 import React from "react";
 
-export default function Modal({ addEmployee }) {
+export default function Modal({ getEmployees }) {
   const [showModal, setShowModal] = React.useState(false);
-  const [firstname, setFirstname] = React.useState("");
-  const [lastname, setLastname] = React.useState("");
+  const [firstName, setFirstname] = React.useState("");
+  const [lastName, setLastname] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [ssn, setSsn] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [address, setAddress] = React.useState("");
-  const handleSubmit = (e) => {
+  const [isMarried, setIsMarried] = React.useState("no")
+  const [under17, setUnder17] = React.useState(0)
+  const [over17, setOver17] = React.useState(0)
+  const [step, setStep] = React.useState("first")
+
+
+  const validSsn = (value) =>
+    value && /^(?!(000|666|9))(\d{3}-?(?!(00))\d{2}-?(?!(0000))\d{4})$/.test(value)
+      ? true
+      : false
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    addEmployee(prev => {
-      return [
-        ...prev,
-        { id: Math.floor(Math.random() * 90 + 10), firstname, lastname, email, ssn, phone, address }
-      ]
-    })
+    try {
+      const { data } = await axios.post("http://54.183.246.192:9000/api/employee", {
+        firstName, lastName, email, ssn, phone, address,
+        dependents: { under17: parseInt(under17), over17: parseInt(over17) }
+      })
+      if (data) {
+        getEmployees()
+      }
+      closeModal()
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+  const closeModal = () => {
+    setFirstname("")
+    setLastname("")
+    setEmail("")
+    setSsn("")
+    setPhone("")
+    setAddress("")
+    setIsMarried("no")
+    setUnder17(0)
+    setOver17(0)
+    setStep("first")
     setShowModal(false)
   }
+
   return (
     <>
       <button
@@ -41,76 +74,133 @@ export default function Modal({ addEmployee }) {
                     Add Employee
                   </h3>
                   <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
+                    onClick={closeModal}
                   >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    <span className="bg-transparent text-black h-6 w-6 text-2xl block outline-none focus:outline-none">
                       ×
                     </span>
                   </button>
                 </div>
                 {/*body*/}
-                <form>
-                  <div className="relative p-6 flex-auto space-y-6">
-                    <article className="flex space-x-4 justify-between">
-                      <div className="flex-1">
-                        <input value={firstname} onChange={({ target }) => setFirstname(target.value)} autoComplete="off" type="text" placeholder="First Name" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" />
-                      </div>
-                      <div className="flex-1">
-                        <input
-                          value={lastname}
-                          onChange={({ target }) => setLastname(target.value)}
-                          type="text" placeholder="Last Name" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" />
-                      </div>
-                    </article>
+                <form onSubmit={handleSubmit}>
+                  <article>
+                    <div className="flex justify-around mt-4">
+                      <article className="w-10 h-10 rounded-full border-2 bg-emerald-400 text-white border-emerald-400 font-bold flex justify-center items-center">1</article>
+                      <article className={`w-10 h-10 rounded-full border-2  border-emerald-400 font-bold flex justify-center items-center transition-all ease-in
+                      ${step === "second" && "bg-emerald-400 text-white"}
+                    `}>2
+                      </article>
+                    </div>
 
-                    <article className="flex space-x-4 justify-between">
-                      <div className="flex-1">
-                        <input
-                          value={email}
-                          onChange={({ target }) => setEmail(target.value)}
-                          type="email" placeholder="Email" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" />
-                      </div>
-                      <div className="flex-1">
-                        <input
-                          value={phone}
-                          onChange={({ target }) => setPhone(target.value)}
-                          type="tel" placeholder="Phone" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" />
-                      </div>
-                    </article>
+                    <div className="relative p-6 flex-auto space-y-6">
+                      {step === "first" && (
+                        <>
+                          <article className="flex space-x-4 justify-between">
+                            <div className="flex-1">
+                              <input value={firstName} onChange={({ target }) => setFirstname(target.value)} autoComplete="off" type="text" placeholder="First Name" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" required />
+                            </div>
+                            <div className="flex-1">
+                              <input
+                                value={lastName}
+                                onChange={({ target }) => setLastname(target.value)}
+                                type="text" placeholder="Last Name" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" required />
+                            </div>
+                          </article>
 
-                    <article className="flex space-x-4 justify-between">
-                      <div className="flex-1">
-                        <input
-                          value={ssn}
-                          onChange={({ target }) => setSsn(target.value)}
-                          type="text" placeholder="SSN" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" />
-                      </div>
-                      <div className="flex-1">
-                        <input
-                          value={address}
-                          onChange={({ target }) => setAddress(target.value)}
-                          type="text" placeholder="Address" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" />
-                      </div>
-                    </article>
-                  </div>
-                  {/*footer*/}
-                  <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                    <button
-                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="submit"
-                      onClick={() => setShowModal(false)}
-                    >
-                      Close
-                    </button>
-                    <button
-                      className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={handleSubmit}
-                    >
-                      Submit
-                    </button>
-                  </div>
+                          <article className="flex space-x-4 justify-between">
+                            <div className="flex-1">
+                              <input
+                                value={email}
+                                onChange={({ target }) => setEmail(target.value)}
+                                type="email" placeholder="Email" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" required />
+                            </div>
+                            <div className="flex-1">
+                              <input
+                                value={phone}
+                                onChange={({ target }) => setPhone(target.value)}
+                                type="tel" placeholder="Phone" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" required />
+                            </div>
+                          </article>
+                        </>
+                      )}
+
+                      {step === "second" && (
+                        <>
+                          <article className="flex space-x-4 justify-between">
+                            <div className="flex-1">
+                              <input
+                                value={ssn}
+                                onChange={({ target }) => setSsn(target.value)}
+                                type="text" placeholder="SSN" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+                                title="579-50-9686"
+                                pattern="^(?!(000|666|9))(\d{3}-?(?!(00))\d{2}-?(?!(0000))\d{4})$"
+                                required />
+                            </div>
+                            <div className="flex-1">
+                              <input
+                                value={address}
+                                onChange={({ target }) => setAddress(target.value)}
+                                type="text" placeholder="Address" className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3" required />
+                            </div>
+                          </article>
+
+                          <article>
+                            <p>Do You Have Dependents?</p>
+                            <select onChange={(e) => setIsMarried(e.target.value)} value={isMarried}>
+                              <option value="yes">Yes</option>
+                              <option value="no">No</option>
+                            </select>
+                          </article>
+
+                          <article className={`${isMarried === 'yes' ? 'block' : 'hidden'} flex justify-between w-56`}>
+                            <p className="pr-4">Dependents under 17</p>
+                            <input
+                              value={under17}
+                              onChange={(e) => setUnder17(e.target.value)}
+                              className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number" />
+                          </article>
+
+                          <article className={`${isMarried === 'yes' ? 'block' : 'hidden'} flex justify-between w-56`}>
+                            <p className="pr-4">Dependents over 17</p>
+                            <input
+                              value={over17}
+                              onChange={(e) => setOver17(e.target.value)}
+                              className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number"
+                            />
+                          </article>
+                        </>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                      <button
+                        disabled={step === "first"}
+                        onClick={() => setStep("first")}
+                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      >
+                        Prev
+                      </button>
+                      {
+                        step === "first" && (
+                          <button
+                            onClick={() => setStep("second")}
+                            className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                          >
+                            Next
+                          </button>
+                        )
+                      }
+
+                      {
+                        step === "second" && (
+                          <button
+                            className="bg-emerald-700 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="submit">Submit</button>
+                        )
+                      }
+                    </div>
+                  </article>
                 </form>
               </div>
             </div>

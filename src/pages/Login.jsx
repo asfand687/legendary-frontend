@@ -38,7 +38,7 @@ const Login = () => {
           <p className="my-2">Please enter your credentials to login.</p>
           <form onSubmit={onUserLogin} className="p-8 pt-6">
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+              <label className="block text-gray-700 text-sm font-bold mb-2" >
                 Username
               </label>
               <input
@@ -47,7 +47,7 @@ const Login = () => {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div><div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+              <label className="block text-gray-700 text-sm font-bold mb-2" >
                 Password
               </label>
               <input value={password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
