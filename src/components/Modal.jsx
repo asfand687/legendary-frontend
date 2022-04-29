@@ -26,7 +26,7 @@ export default function Modal({ getEmployees }) {
     const maritalStatus = isMarried ? 'married' : 'single'
     e.preventDefault()
     try {
-      const { data } = await axios.post("http://localhost:9000/api/employee", {
+      const { data } = await axios.post("http://54.183.246.192:9000/api/employee", {
         firstName, lastName, email, ssn, phone, address, maritalStatus,
         dependents: { under17: parseInt(under17), over17: parseInt(over17) }
       })
