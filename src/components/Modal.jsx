@@ -1,6 +1,9 @@
 import axios from "axios";
 import React from "react";
 
+/* Shams Mistry
+03008250001  */
+
 export default function Modal({ getEmployees }) {
   const [showModal, setShowModal] = React.useState(false);
   const [firstName, setFirstname] = React.useState("");
@@ -9,23 +12,22 @@ export default function Modal({ getEmployees }) {
   const [ssn, setSsn] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [address, setAddress] = React.useState("");
-  const [isMarried, setIsMarried] = React.useState("no")
+  const [isMarried, setIsMarried] = React.useState(false)
   const [under17, setUnder17] = React.useState(0)
   const [over17, setOver17] = React.useState(0)
   const [step, setStep] = React.useState("first")
+  const [hasDependents, setHasDependents] = React.useState("no")
 
 
-  const validSsn = (value) =>
-    value && /^(?!(000|666|9))(\d{3}-?(?!(00))\d{2}-?(?!(0000))\d{4})$/.test(value)
-      ? true
-      : false
 
+  // http://54.183.246.192:9000/api/employee"
 
   const handleSubmit = async (e) => {
+    const maritalStatus = isMarried ? 'married' : 'single'
     e.preventDefault()
     try {
-      const { data } = await axios.post("http://54.183.246.192:9000/api/employee", {
-        firstName, lastName, email, ssn, phone, address,
+      const { data } = await axios.post("http://localhost:9000/api/employee", {
+        firstName, lastName, email, ssn, phone, address, maritalStatus,
         dependents: { under17: parseInt(under17), over17: parseInt(over17) }
       })
       if (data) {
@@ -48,7 +50,13 @@ export default function Modal({ getEmployees }) {
     setUnder17(0)
     setOver17(0)
     setStep("first")
+    setIsMarried(false)
     setShowModal(false)
+    setHasDependents("no")
+  }
+
+  const handleMarriage = (status) => {
+    status === "married" ? setIsMarried(true) : setIsMarried(false)
   }
 
   return (
@@ -145,29 +153,50 @@ export default function Modal({ getEmployees }) {
                           </article>
 
                           <article>
-                            <p>Do You Have Dependents?</p>
-                            <select onChange={(e) => setIsMarried(e.target.value)} value={isMarried}>
-                              <option value="yes">Yes</option>
-                              <option value="no">No</option>
-                            </select>
+                            <p>Marital Status</p>
+                            <div className="flex space-x-6">
+                              <div className="space-x-2">
+                                <input id="married" type="radio" value={"married"} checked={isMarried} onChange={({ target }) => handleMarriage(target.value)} />
+                                <label htmlFor="married">Married</label>
+                              </div>
+
+                              <div className="space-x-2">
+
+                                <input id="single" type="radio" value={"single"} checked={!isMarried} onChange={({ target }) => handleMarriage(target.value)} />
+                                <label htmlFor="single">Single</label>
+                              </div>
+                            </div>
+
                           </article>
 
-                          <article className={`${isMarried === 'yes' ? 'block' : 'hidden'} flex justify-between w-56`}>
-                            <p className="pr-4">Dependents under 17</p>
-                            <input
-                              value={under17}
-                              onChange={(e) => setUnder17(e.target.value)}
-                              className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number" />
-                          </article>
+                          <div className={`space-y-6 ${isMarried ? "block" : "hidden"}`}>
+                            <article>
+                              <p>Do You Have Dependents?</p>
+                              <select onChange={(e) => setHasDependents(e.target.value)} value={hasDependents}>
+                                <option value={"yes"}>Yes</option>
+                                <option value={"no"}>No</option>
+                              </select>
+                            </article>
 
-                          <article className={`${isMarried === 'yes' ? 'block' : 'hidden'} flex justify-between w-56`}>
-                            <p className="pr-4">Dependents over 17</p>
-                            <input
-                              value={over17}
-                              onChange={(e) => setOver17(e.target.value)}
-                              className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number"
-                            />
-                          </article>
+                            <div className={`${hasDependents === "yes" ? "block" : "hidden"}`}>
+                              <article className={`flex justify-between w-56`}>
+                                <p className="pr-4">Dependents under 17</p>
+                                <input
+                                  value={under17}
+                                  onChange={(e) => setUnder17(e.target.value)}
+                                  className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number" />
+                              </article>
+
+                              <article className={`flex justify-between w-56`}>
+                                <p className="pr-4">Dependents over 17</p>
+                                <input
+                                  value={over17}
+                                  onChange={(e) => setOver17(e.target.value)}
+                                  className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number"
+                                />
+                              </article>
+                            </div>
+                          </div>
                         </>
                       )}
                     </div>
