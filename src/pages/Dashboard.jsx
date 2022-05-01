@@ -7,6 +7,7 @@ import {
 } from "react-router-dom"
 import Analytics from './Analytics'
 import Employees from './Employees'
+import Companies from './Companies'
 
 const Dashboard = () => {
   return (
@@ -17,6 +18,7 @@ const Dashboard = () => {
         <Routes>
           <Route path="/" element={<Analytics />} />
           <Route path="/employees" element={<Employees />} />
+          <Route path="/companies" element={<Companies />} />
         </Routes>
       </div>
     </section>

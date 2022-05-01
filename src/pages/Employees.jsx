@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Modal from '../components/Modal'
-import Table from '../components/Table'
+import Modal from '../components/EmployeeModal'
+import Table from '../components/EmployeeTable'
 
 const Employees = () => {
   const [employees, setEmployees] = useState([])
@@ -17,6 +17,7 @@ const Employees = () => {
   useEffect(() => {
     getEmployees()
   }, [])
+
   return (
     <div className="p-6 w-full max-w-7xl mx-auto">
       <h2 className="text-gray-700 text-3xl">Employees</h2>

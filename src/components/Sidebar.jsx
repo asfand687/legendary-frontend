@@ -8,7 +8,7 @@ const Sidebar = () => {
         <article className="border-b border-gray-200 w-full py-10"><Link to="/">Analytics</Link></article>
         <article className="border-b border-gray-200 w-full py-10">Events</article>
         <article className="border-b border-gray-200 w-full py-10"><Link to="/employees">Employees</Link></article>
-        <article className="border-b border-gray-200 w-full py-10">Companies</article>
+        <article className="border-b border-gray-200 w-full py-10"><Link to="/companies">Companies</Link></article>
         <article className="border-b border-gray-200 w-full py-10">Invoices</article>
       </div>
     </div>

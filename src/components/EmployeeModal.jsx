@@ -1,8 +1,6 @@
 import axios from "axios";
 import React from "react";
 
-/* Shams Mistry
-03008250001  */
 
 export default function Modal({ getEmployees }) {
   const [showModal, setShowModal] = React.useState(false);
