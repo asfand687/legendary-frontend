@@ -10,7 +10,7 @@ const Companies = () => {
 
   const getCompanies = async () => {
     try {
-      const { data } = await axios.get("http://54.183.246.192:9000/api/company")
+      const { data } = await axios.get("https://back.blackpenguin.site/api/company")
       setCompanies(data)
     } catch (error) {
       console.log(error.message)

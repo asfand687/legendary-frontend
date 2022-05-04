@@ -24,7 +24,7 @@ export default function Modal({ getCompanies }) {
 
     e.preventDefault()
     try {
-      const { data } = await axios.post("http://localhost:9000/api/company", {
+      const { data } = await axios.post("https://back.blackpenguin.site/api/company", {
         name, email, phone, taxId, address, beo,
         contact: [{ name: contactName, phone: contactPhone, email: contactEmail, department: contactDepartment }]
       })

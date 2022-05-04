@@ -15,17 +15,19 @@ export default function Modal({ getEmployees }) {
   const [over17, setOver17] = React.useState(0)
   const [step, setStep] = React.useState("first")
   const [hasDependents, setHasDependents] = React.useState("no")
+  const [gender, setGender] = React.useState("male")
 
 
 
   // http://54.183.246.192:9000/api/employee"
+  // https://back.blackpenguin.site/api/employee
 
   const handleSubmit = async (e) => {
     const maritalStatus = isMarried ? 'married' : 'single'
     e.preventDefault()
     try {
-      const { data } = await axios.post("http://54.183.246.192:9000/api/employee", {
-        firstName, lastName, email, ssn, phone, address, maritalStatus,
+      const { data } = await axios.post("https://back.blackpenguin.site/api/employee", {
+        firstName, lastName, email, ssn, phone, address, maritalStatus, gender,
         dependents: { under17: parseInt(under17), over17: parseInt(over17) }
       })
       if (data) {
@@ -150,51 +152,71 @@ export default function Modal({ getEmployees }) {
                             </div>
                           </article>
 
-                          <article>
-                            <p>Marital Status</p>
-                            <div className="flex space-x-6">
-                              <div className="space-x-2">
-                                <input id="married" type="radio" value={"married"} checked={isMarried} onChange={({ target }) => handleMarriage(target.value)} />
-                                <label htmlFor="married">Married</label>
+                          <article className="flex space-x-4 justify-between">
+                            <div>
+                              <article>
+                                <p>Marital Status</p>
+                                <div className="flex space-x-6">
+                                  <div className="space-x-2">
+                                    <input id="married" type="radio" value={"married"} checked={isMarried} onChange={({ target }) => handleMarriage(target.value)} />
+                                    <label htmlFor="married">Married</label>
+                                  </div>
+
+                                  <div className="space-x-2">
+
+                                    <input id="single" type="radio" value={"single"} checked={!isMarried} onChange={({ target }) => handleMarriage(target.value)} />
+                                    <label htmlFor="single">Single</label>
+                                  </div>
+                                </div>
+
+                              </article>
+
+                              <div className={`space-y-6 ${isMarried ? "block" : "hidden"}`}>
+                                <article>
+                                  <p>Do You Have Dependents?</p>
+                                  <select onChange={(e) => setHasDependents(e.target.value)} value={hasDependents}>
+                                    <option value={"yes"}>Yes</option>
+                                    <option value={"no"}>No</option>
+                                  </select>
+                                </article>
+
+                                <div className={`${hasDependents === "yes" ? "block" : "hidden"}`}>
+                                  <article className={`flex justify-between w-56`}>
+                                    <p className="pr-4">Dependents under 17</p>
+                                    <input
+                                      value={under17}
+                                      onChange={(e) => setUnder17(e.target.value)}
+                                      className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number" />
+                                  </article>
+
+                                  <article className={`flex justify-between w-56`}>
+                                    <p className="pr-4">Dependents over 17</p>
+                                    <input
+                                      value={over17}
+                                      onChange={(e) => setOver17(e.target.value)}
+                                      className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number"
+                                    />
+                                  </article>
+                                </div>
                               </div>
 
-                              <div className="space-x-2">
+                            </div>
+                            <div className="pr-6">
+                              <p>Gender</p>
+                              <div className="flex space-x-6">
+                                <div className="space-x-2">
+                                  <input id="male" type="radio" value={"male"} checked={gender === "male"} onChange={({ target }) => setGender(target.value)} />
+                                  <label htmlFor="male">Male</label>
+                                </div>
 
-                                <input id="single" type="radio" value={"single"} checked={!isMarried} onChange={({ target }) => handleMarriage(target.value)} />
-                                <label htmlFor="single">Single</label>
+                                <div className="space-x-2">
+
+                                  <input id="female" type="radio" value={"female"} checked={gender === "female"} onChange={({ target }) => setGender(target.value)} />
+                                  <label htmlFor="female">Female</label>
+                                </div>
                               </div>
                             </div>
-
                           </article>
-
-                          <div className={`space-y-6 ${isMarried ? "block" : "hidden"}`}>
-                            <article>
-                              <p>Do You Have Dependents?</p>
-                              <select onChange={(e) => setHasDependents(e.target.value)} value={hasDependents}>
-                                <option value={"yes"}>Yes</option>
-                                <option value={"no"}>No</option>
-                              </select>
-                            </article>
-
-                            <div className={`${hasDependents === "yes" ? "block" : "hidden"}`}>
-                              <article className={`flex justify-between w-56`}>
-                                <p className="pr-4">Dependents under 17</p>
-                                <input
-                                  value={under17}
-                                  onChange={(e) => setUnder17(e.target.value)}
-                                  className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number" />
-                              </article>
-
-                              <article className={`flex justify-between w-56`}>
-                                <p className="pr-4">Dependents over 17</p>
-                                <input
-                                  value={over17}
-                                  onChange={(e) => setOver17(e.target.value)}
-                                  className="w-10 pl-2 border border-gray-400 rounded outline-none focus:border-gray-500" type="number"
-                                />
-                              </article>
-                            </div>
-                          </div>
                         </>
                       )}
                     </div>

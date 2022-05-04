@@ -8,7 +8,7 @@ const Employees = () => {
 
   const getEmployees = async () => {
     try {
-      const { data } = await axios.get("http://54.183.246.192:9000/api/employee")
+      const { data } = await axios.get("https://back.blackpenguin.site/api/employee")
       setEmployees(data)
     } catch (error) {
       console.log(error.message)
@@ -24,7 +24,9 @@ const Employees = () => {
       <div className="flex flex-row-reverse">
         <Modal getEmployees={getEmployees} />
       </div>
-      <Table employees={employees} />
+      <div className="max-h-[500px] overflow-y-scroll">
+        <Table employees={employees} />
+      </div>
     </div>
   )
 }
