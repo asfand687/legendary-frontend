@@ -8,6 +8,8 @@ import {
 import Analytics from './Analytics'
 import Employees from './Employees'
 import Companies from './Companies'
+import Events from './Events'
+import AddEvent from './AddEvent'
 
 const Dashboard = () => {
   return (
@@ -19,6 +21,8 @@ const Dashboard = () => {
           <Route path="/" element={<Analytics />} />
           <Route path="/employees" element={<Employees />} />
           <Route path="/companies" element={<Companies />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/add" element={<AddEvent />} />
         </Routes>
       </div>
     </section>

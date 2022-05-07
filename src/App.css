@@ -1,0 +1,7 @@
+.input-focus:focus {
+  border-color: rgb(122, 120, 120);
+}
+
+.radio-input:checked+label {
+  border: 1px solid black;
+}
