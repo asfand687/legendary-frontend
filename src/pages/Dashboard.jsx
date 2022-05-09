@@ -10,6 +10,10 @@ import Employees from './Employees'
 import Companies from './Companies'
 import Events from './Events'
 import AddEvent from './AddEvent'
+import AddUser from './AddUser'
+import AddCategory from './AddCategory'
+import AddPosition from './AddPosition'
+import Settings from './Settings'
 
 const Dashboard = () => {
   return (
@@ -23,6 +27,10 @@ const Dashboard = () => {
           <Route path="/companies" element={<Companies />} />
           <Route path="/events" element={<Events />} />
           <Route path="/events/add" element={<AddEvent />} />
+          <Route path="/adduser" element={<AddUser />} />
+          <Route path="/addcategory" element={<AddCategory />} />
+          <Route path="/addposition" element={<AddPosition />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
     </section>

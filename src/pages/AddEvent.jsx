@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { employeeProfessions, requiredEquipmentData } from '../data/data'
 import { ReactComponent as Chevron } from '../images/chevron.svg'
@@ -8,7 +8,6 @@ const AddEvent = () => {
   const navigate = useNavigate()
   const [step, setStep] = useState("first")
   const [parking, setParking] = useState("")
-  const [location, setLocation] = useState("")
   const [uniform, setUniform] = useState("")
   const [requiredEquipment, setRequiredEquipment] = useState(requiredEquipmentData)
   const [additionalLocationInstructions, setAdditionalLocationInstructions] = useState("")
@@ -20,6 +19,9 @@ const AddEvent = () => {
   const [numberOfProfessionals, setNumberOfProfessionals] = useState("1")
   const [contactInfo, setContactInfo] = useState({ name: "", email: "", phone: "" })
   const [shiftName, setShiftName] = useState("")
+  const [companies, setCompanies] = useState([])
+  const [selectedCompany, setSelectedCompany] = useState("")
+
 
 
 
@@ -64,10 +66,13 @@ const AddEvent = () => {
     e.preventDefault()
     try {
       const { data } = await axios.post("https://back.blackpenguin.site/api/event", {
-        parking, location, uniform, equipment: parseRequiredEquipment(), otherInstructions: additionalLocationInstructions, position: employeeProfessionRequired, type: employmentType, eventDate: shiftDate, startTime: shiftStartTime, endTime: shiftEndTime, onSiteContact: [{ name: contactInfo.name, email: contactInfo.email, phone: contactInfo.phone }], eventName: shiftName, professionals: numberOfProfessionals
+        eventData: {
+          companyName: selectedCompany?.split(",")[1].trim(),
+          parking, uniform, equipment: parseRequiredEquipment(), otherInstructions: additionalLocationInstructions, position: employeeProfessionRequired, type: employmentType, eventDate: shiftDate, startTime: shiftStartTime, endTime: shiftEndTime, onSiteContact: [{ name: contactInfo.name, email: contactInfo.email, phone: contactInfo.phone }], eventName: shiftName, professionals: numberOfProfessionals,
+        },
+        companyId: selectedCompany?.split(",")[0].trim()
       })
       if (data) {
-        console.log(data)
         navigate("/events")
       }
 
@@ -76,10 +81,19 @@ const AddEvent = () => {
     }
   }
 
+  const getCompanies = async () => {
+    const { data } = await axios.get("https://back.blackpenguin.site/api/company")
+    setCompanies(data)
+  }
+
+  useEffect(() => {
+    getCompanies()
+  }, [])
+
   return (
     <div className="p-6 w-full max-w-7xl mx-auto">
       <h2 className="font-bold text-3xl pb-4">Add Event</h2>
-      <div className="bg-white border p-6 border-gray-200 rounded">
+      <div className="bg-white border border-gray-200 rounded">
         <nav className={`flex bg-blue-50 text-blue-700 border border-blue-200 py-3 px-5 mb-4`} aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li
@@ -122,7 +136,12 @@ const AddEvent = () => {
               <>
                 <h2 className="text-black font-bold text-2xl">Where do you need staff?</h2>
                 <div className="pt-4">
-                  <input value={location} onChange={({ target }) => setLocation(target.value)} className="input-focus w-full text-gray-700 outline-none px-3 py-1.5 border border-gray-200 focus:border-gray-300 rounded" placeholder="Location" />
+                  <select onChange={({ target }) => setSelectedCompany(target.value)} className="form-select appearance-none input-focus block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+                    <option>Open this select menu</option>
+                    {companies?.map((company, idx) => (
+                      <option value={`${company._id}, ${company.name}`} key={idx}>{company.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="py-4">
                   <h2 className="text-lg font-bold">Parking</h2>
@@ -302,6 +321,10 @@ const AddEvent = () => {
                   <div className="flex space-x-20">
                     <div className="space-y-4">
                       <div>
+                        <strong>Company Name: </strong> <span className="pl-4">{selectedCompany ? selectedCompany.split(",")[1].trim() : "Not Selected"}</span>
+                      </div>
+
+                      <div>
                         <strong>Parking: </strong> <span className="pl-4">{parking ? parking : "Not Selected"}</span>
                       </div>
 
@@ -329,9 +352,6 @@ const AddEvent = () => {
 
                     </div>
                     <div className="space-y-4">
-                      <div>
-                        <strong>Location: </strong> <span className="pl-4">{location ? location : "Not Selected"}</span>
-                      </div>
                       <div>
                         <strong>Additional Location Instructions: </strong> <span className="pl-4">{additionalLocationInstructions ? additionalLocationInstructions : "Not Provided"}</span>
                       </div>

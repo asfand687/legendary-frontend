@@ -10,7 +10,11 @@ const Companies = () => {
 
   const getCompanies = async () => {
     try {
-      const { data } = await axios.get("https://back.blackpenguin.site/api/company")
+      const { data } = await axios.get("https://back.blackpenguin.site/api/company", {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
       setCompanies(data)
     } catch (error) {
       console.log(error.message)
@@ -20,7 +24,6 @@ const Companies = () => {
     getCompanies()
   }, [])
 
-  console.log(companies)
   return (
     <div className="p-6 w-full max-w-7xl mx-auto">
       <h2 className="text-gray-700 text-3xl">Companies</h2>

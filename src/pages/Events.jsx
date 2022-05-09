@@ -14,6 +14,7 @@ const Events = () => {
       console.log(error.message)
     }
   }
+
   useEffect(() => {
     getEvents()
   }, [])
